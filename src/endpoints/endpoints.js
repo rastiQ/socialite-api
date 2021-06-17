@@ -1,26 +1,45 @@
 import mongoose from 'mongoose'
-import { findUserByUID, findUserByID } from './user.js'
+import { findUserByUID, findUserByID, findUserFriends } from './user.js'
 
 
 //get user object with uid or _id
 export const getUserByID = (req, res) => {
-    const id = req.params.id
+    const userID = req.params.id
 
-    if (!mongoose.isValidObjectId(id)) {
-        findUserByUID(id).then(user => {
-            res.json(user)
+    if (!mongoose.isValidObjectId(userID)) {
+        findUserByUID(userID).then(user => {
+            res.status(200).json(user)
         }).catch(error => {
             if (error === 'user_not_found') res.status(404).json({
                 code: 'user_not_found'
             })
         })
     } else {
-        findUserByID(id).then(user => {
+        findUserByID(userID).then(user => {
             res.json(user)
         }).catch(error => {
-            if(error==='user_not_found') res.status(404).json({
+            if (error === 'user_not_found') res.status(404).json({
                 code: 'user_not_found'
             })
+        })
+    }
+}
+
+export const getUserFriends = (req, res) => {
+    const userID = req.params.id
+
+    if (mongoose.isValidObjectId(userID)) {
+        const objectID = mongoose.mongo.ObjectId(req.params.id)
+        findUserFriends(objectID).then(friends => {
+            res.status(200).json(friends)
+        }).catch(error => {
+            if (error === 'no_friends_found') res.status(404).json({
+                code: 'no_friends_found'
+            })
+        })
+    } else {
+        res.status(400).json({
+            code: 'user_not_found'
         })
     }
 }

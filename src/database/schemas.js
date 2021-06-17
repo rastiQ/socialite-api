@@ -1,10 +1,33 @@
 import mongoose from 'mongoose'
 const { Schema } = mongoose
 
+//registrated user schema
 export const userSchema = new Schema({
-    uid: { type: String, required: true },
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    uid: String, //userid from firebase
+    firstName: String,
+    lastName: String,
     lastOnline: Date,
-    createdAt: { type: Date, required: true },
+    image: String,
+    createdAt: Date
+})
+
+//friendship between users
+//status: 1 - pending, 2 - accepted
+export const friendshipSchema = new Schema({
+    senderID: mongoose.ObjectId,
+    recieverID: mongoose.ObjectId,
+    status: Number,
+})
+
+export const messageSchema = new Schema({
+    senderID: mongoose.ObjectId,
+    recieverID: mongoose.ObjectId,
+    content: String,
+    sendedAt: Date,
+})
+
+export const postSchema = new Schema({
+    posterID: mongoose.ObjectId,
+    content: String,
+    postedAt: Date
 })
